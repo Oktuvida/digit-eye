@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 
-from .common.types import EpochStep
+from .common.types import EpochStep, EpochResult, BatchStep
 
 from .model import Model
 from .common.constants import CUDA_IS_AVAILABLE
@@ -56,9 +56,10 @@ class Cifar10Model(Model):
         self,
         epochs: int,
         train_loader: DataLoader,
-        test_loader: DataLoader | None = None,
-    ) -> None:
+        test_loader: DataLoader,
+    ) -> list[EpochResult]:
         best_accuracy: float = -np.inf
+        history: list[EpochResult] = []
         for epoch in range(epochs):
             print(f"\nN° Epoch {epoch}")
             self.model.train()
@@ -67,42 +68,46 @@ class Cifar10Model(Model):
                 f"Trainning loss: {train_epoch_step['average_loss']}\tAccuracy: {train_epoch_step['accuracy']}"
             )
 
-            if test_loader:
-                self.model.eval()
-                test_epoch_step = self.epoch_step(test_loader, train=False)
+            self.model.eval()
+            test_epoch_step = self.epoch_step(test_loader, train=False)
+            history.append(
+                {
+                    "training": train_epoch_step,
+                    "testing": test_epoch_step,
+                }
+            )
+            print(
+                f"Test loss: {test_epoch_step['average_loss']}\tAccuracy: {test_epoch_step['accuracy']}"
+            )
+            if best_accuracy is None or best_accuracy < test_epoch_step["accuracy"]:
                 print(
-                    f"Test loss: {test_epoch_step['average_loss']}\tAccuracy: {test_epoch_step['accuracy']}"
+                    f"Better Accuracy Found: {best_accuracy} -> {test_epoch_step['accuracy']}. Saving Model..."
                 )
-                if best_accuracy is None or best_accuracy < test_epoch_step["accuracy"]:
-                    print(
-                        f"Best Accuracy Found: {best_accuracy} -> {test_epoch_step['accuracy']}. Saving Model..."
-                    )
-                    best_accuracy = test_epoch_step["accuracy"]
-                    self.save_weights()
+                best_accuracy = test_epoch_step["accuracy"]
+                self.save_weights()
+        return history
+
+    def evaluate(self, validation_loader: DataLoader) -> EpochStep:
+        validation_epoch_step = self.epoch_step(validation_loader, train=False)
+        print(
+            f"\nValidation loss: {validation_epoch_step['average_loss']}\tAccuracy: {validation_epoch_step['accuracy']}"
+        )
+        return validation_epoch_step
 
     def epoch_step(self, dataset_loader: DataLoader, train=False) -> EpochStep:
         total_correct_preds, total_loss = 0, 0
 
         sample_count = 0
-        for x, target in dataset_loader:
+        for batch in dataset_loader:
             if train:
                 self.optimizer.zero_grad()
+            sample_count += len(batch[0])
+            batch_step = self.batch_step(batch)
 
-            x, target = Variable(x), Variable(target)
-            if CUDA_IS_AVAILABLE:
-                x, target = x.cuda(), target.cuda()
-
-            sample_count += len(x)
-
-            score = self.model(x, target)
-            loss = self.loss_criterion(score, target)
-
-            _, pred_label = torch.max(score.data, 1)
-            correct_preds = (pred_label == target.data).sum()
-            total_correct_preds += correct_preds
-            total_loss += loss.item()
+            total_correct_preds += batch_step["correct_preds"]
+            total_loss += batch_step["loss"].item()
             if train:
-                loss.backward()
+                batch_step["loss"].backward()
                 self.optimizer.step()
 
         accuracy = total_correct_preds / sample_count
@@ -110,8 +115,16 @@ class Cifar10Model(Model):
 
         return {"accuracy": accuracy, "average_loss": average_loss}
 
-    def evaluate(self, validation_loader: DataLoader):
-        validation_epoch_step = self.epoch_step(validation_loader, train=False)
-        print(
-            f"\nValidation loss: {validation_epoch_step['average_loss']}\tAccuracy: {validation_epoch_step['accuracy']}"
-        )
+    def batch_step(self, batch) -> BatchStep:
+        x, target = batch
+        x, target = Variable(x), Variable(target)
+        if CUDA_IS_AVAILABLE:
+            x, target = x.cuda(), target.cuda()
+
+        score = self.model(x, target)
+        loss = self.loss_criterion(score, target)
+
+        _, pred_label = torch.max(score.data, 1)
+        correct_preds = int((pred_label == target.data).sum())
+
+        return {"preds": pred_label, "correct_preds": correct_preds, "loss": loss}

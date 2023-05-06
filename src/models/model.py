@@ -4,7 +4,7 @@ import torch.optim as optim
 
 from abc import ABC, abstractmethod
 from torch.utils.data import DataLoader
-from .common.types import EpochStep
+from .common.types import EpochStep, EpochResult, BatchStep
 
 
 class Model(ABC):
@@ -14,20 +14,24 @@ class Model(ABC):
     path: str
 
     @abstractmethod
-    def epoch_step(self, dataset_loader: DataLoader, train=False) -> EpochStep:
-        raise NotImplementedError
-
-    @abstractmethod
     def train(
         self,
         num_epochs: int,
         train_loader: DataLoader,
-        test_loader: DataLoader | None = None,
-    ) -> None:
+        test_loader: DataLoader,
+    ) -> list[EpochResult]:
         raise NotImplementedError
 
     @abstractmethod
-    def evaluate(self, validation_loader: DataLoader):
+    def evaluate(self, validation_loader: DataLoader) -> EpochStep:
+        raise NotImplementedError
+
+    @abstractmethod
+    def epoch_step(self, dataset_loader: DataLoader, train=False) -> EpochStep:
+        raise NotImplementedError
+
+    @abstractmethod
+    def batch_step(self, batch) -> BatchStep:
         raise NotImplementedError
 
     def save_weights(self):
