@@ -3,7 +3,7 @@ from typing import TypedDict
 
 
 class BatchStep(TypedDict):
-    preds: list[torch.Tensor]
+    preds: torch.Tensor
     correct_preds: int
     loss: torch.Tensor
 

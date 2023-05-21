@@ -18,13 +18,37 @@ class Net(nn.Module):
         self.layers = nn.ModuleList(
             [
                 nn.Sequential(
-                    nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
+                    nn.Conv2d(3, 32, kernel_size=3, padding=1),
+                    nn.ReLU(),
+                    nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
+                    nn.ReLU(),
+                    nn.MaxPool2d(kernel_size=2, stride=2),
+                    nn.BatchNorm2d(32),
+                ),
+                nn.Sequential(
+                    nn.Conv2d(32, 64, kernel_size=3, padding=1),
+                    nn.ReLU(),
+                    nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                    nn.ReLU(),
                     nn.MaxPool2d(kernel_size=2, stride=2),
                     nn.BatchNorm2d(64),
                 ),
+                nn.Sequential(
+                    nn.Conv2d(64, 128, kernel_size=3, padding=1),
+                    nn.ReLU(),
+                    nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+                    nn.ReLU(),
+                    nn.MaxPool2d(kernel_size=2, stride=2),
+                    nn.BatchNorm2d(128),
+                ),
                 nn.Flatten(),
                 nn.Sequential(
-                    nn.Linear(64 * 4 * 4, 10),
+                    nn.Linear(128 * 4 * 4, 512),
+                    nn.ReLU(),
+                    nn.Linear(512, 128),
+                    nn.ReLU(),
+                    nn.Linear(128, 10),
+                    nn.LogSoftmax(dim=1),
                 ),
             ]
         )
@@ -50,6 +74,7 @@ class Cifar10Model(Model):
             self.model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005
         )
         self.loss_criterion = nn.CrossEntropyLoss()
+        self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, 32, 0.005)
         self.path = path
 
     def train(
