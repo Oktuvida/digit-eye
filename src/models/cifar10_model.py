@@ -17,7 +17,7 @@ from typing import Type
 
 
 class Cifar10Model(Model):
-    model: nn.Module
+    inner_model: nn.Module
     optimizer: optim.SGD
     loss_criterion: nn.CrossEntropyLoss
 
@@ -26,12 +26,12 @@ class Cifar10Model(Model):
     ) -> None:
         super().__init__()
 
-        self.model = model(num_outputs=10)
+        self.inner_model = model(num_outputs=10)
         if CUDA_IS_AVAILABLE:
-            self.model.cuda()
+            self.inner_model.cuda()
 
         self.optimizer = optim.SGD(
-            self.model.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4
+            self.inner_model.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4
         )
         self.loss_criterion = nn.CrossEntropyLoss()
         self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=200)
@@ -87,9 +87,9 @@ class Cifar10Model(Model):
         sample_count = 0
 
         if train:
-            self.model.train()
+            self.inner_model.train()
         else:
-            self.model.eval()
+            self.inner_model.eval()
 
         for batch in dataset_loader:
             if train:
@@ -114,7 +114,7 @@ class Cifar10Model(Model):
         if CUDA_IS_AVAILABLE:
             x, target = x.cuda(), target.cuda()
 
-        score = self.model(x, target)
+        score = self.inner_model(x, target)
         loss = self.loss_criterion(score, target)
 
         _, pred_label = torch.max(score.data, 1)

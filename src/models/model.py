@@ -9,7 +9,7 @@ from .common.types import EpochStep, EpochResult, BatchStep
 
 
 class Model(ABC):
-    model: nn.Module
+    inner_model: nn.Module
     optimizer: optim.Optimizer
     loss_criterion: nn.modules.loss._Loss
     path: str
@@ -36,8 +36,8 @@ class Model(ABC):
         raise NotImplementedError
 
     def save_weights(self):
-        torch.save(self.model.state_dict(), self.path)
+        torch.save(self.inner_model.state_dict(), self.path)
 
     def load_weights(self):
         if os.path.isfile(self.path):
-            self.model.load_state_dict(torch.load(self.path))
+            self.inner_model.load_state_dict(torch.load(self.path))
