@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import os
 
 from abc import ABC, abstractmethod
 from torch.utils.data import DataLoader
@@ -38,4 +39,5 @@ class Model(ABC):
         torch.save(self.model.state_dict(), self.path)
 
     def load_weights(self):
-        self.model.load_state_dict(torch.load(self.path))
+        if os.path.isfile(self.path):
+            self.model.load_state_dict(torch.load(self.path))
