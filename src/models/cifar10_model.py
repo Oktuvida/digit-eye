@@ -31,10 +31,10 @@ class Cifar10Model(Model):
             self.inner_model.cuda()
 
         self.optimizer = optim.SGD(
-            self.inner_model.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4
+            self.inner_model.parameters(), lr=0.005, momentum=0.9, weight_decay=5e-4
         )
         self.loss_criterion = nn.CrossEntropyLoss()
-        self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=200)
+        self.scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=50)
 
         self.path = path
 
