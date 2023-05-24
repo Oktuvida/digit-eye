@@ -15186,9 +15186,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>The autoreload extension is already loaded. To reload it, use:
-  %reload_ext autoreload
-CUDA IS AVAILABLE:  True
+<pre>CUDA IS AVAILABLE:  True
 </pre>
 </div>
 </div>
@@ -15400,7 +15398,8 @@ Files already downloaded and verified
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr />
 <hr />
-<h2 id="Modelo-SimpleNet">Modelo SimpleNet<a class="anchor-link" href="#Modelo-SimpleNet">&#182;</a></h2>
+<h2 id="Modelo-SimpleNet">Modelo SimpleNet<a class="anchor-link" href="#Modelo-SimpleNet">&#182;</a></h2><p>Este código entrena el modelo de red neuronal &quot;simple_net_model&quot; o carga los pesos previamente guardados en el modelo. Finalmente, genera una representación gráfica de las estadísticas de rendimiento del modelo.</p>
+
 </div>
 </div>
 </div>
@@ -15472,7 +15471,8 @@ class="
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr />
 <hr />
-<h2 id="Modelo-ResNet-18">Modelo ResNet-18<a class="anchor-link" href="#Modelo-ResNet-18">&#182;</a></h2>
+<h2 id="Modelo-ResNet-18">Modelo ResNet-18<a class="anchor-link" href="#Modelo-ResNet-18">&#182;</a></h2><p>Este código entrena el modelo de red neuronal &quot;res_net_model&quot; o carga los pesos previamente guardados en el modelo. Finalmente, genera una representación gráfica de las estadísticas de rendimiento del modelo.</p>
+
 </div>
 </div>
 </div>
@@ -15592,9 +15592,7 @@ class="
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recall = </span><span class="si">{</span><span class="n">recall</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1 Score = </span><span class="si">{</span><span class="n">f1score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Propabilidades de cada clase: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">cm</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">/</span><span class="n">cm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>        
     <span class="n">disp</span> <span class="o">=</span> <span class="n">ConfusionMatrixDisplay</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="o">=</span><span class="n">cm</span><span class="p">)</span>
     <span class="n">disp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
     
@@ -15657,9 +15655,6 @@ Validation loss: 0.0032828647255897523	Accuracy: 0.863
 Precision = 0.8643496950709437
 Recall = 0.863
 F1 Score = 0.8634114385562254
-Propabilidades de cada clase: 
- [0.89300412 0.92712551 0.80821918 0.71789883 0.84458078 0.80684105
- 0.91967871 0.87937743 0.91056911 0.92871287]
 </pre>
 </div>
 </div>
@@ -15728,9 +15723,6 @@ Validation loss: 0.002693089810013771	Accuracy: 0.8958
 Precision = 0.8960024014504967
 Recall = 0.8958
 F1 Score = 0.8952536718985028
-Propabilidades de cada clase: 
- [0.91563786 0.96558704 0.87671233 0.81128405 0.92842536 0.80684105
- 0.87148594 0.94163424 0.91463415 0.92871287]
 </pre>
 </div>
 </div>
@@ -15763,7 +15755,7 @@ class="
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr />
 <hr />
-<h2 id="Local-Validation">Local Validation<a class="anchor-link" href="#Local-Validation">&#182;</a></h2><p>Este código proporciona funcionalidades para mostrar imágenes junto con sus etiquetas predichas y reales utilizando un modelo de clasificación de imágenes. También incluye una clase personalizada para manipular la asignación de clases a índices en un conjunto de datos de imágenes.</p>
+<h2 id="Validaci%C3%B3n-con-Imagenes-Locales">Validaci&#243;n con Imagenes Locales<a class="anchor-link" href="#Validaci%C3%B3n-con-Imagenes-Locales">&#182;</a></h2><p>Este código proporciona funcionalidades para mostrar imágenes junto con sus etiquetas predichas y reales utilizando un modelo de clasificación de imágenes. También incluye una clase personalizada para manipular la asignación de clases a índices en un conjunto de datos de imágenes.</p>
 
 </div>
 </div>
